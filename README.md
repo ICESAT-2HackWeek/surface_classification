@@ -1,4 +1,4 @@
-# Surface classification
+# Surface type clustering
 
 Unsupervised surface classification on ICESat-2's ATL03. Preliminary goals include correctly downloading and processing ATL03 data, curating the data for training and performing clustering on it to determine different surface types. 
 
