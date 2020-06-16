@@ -1,6 +1,6 @@
-# Sample Project
+# Surface classification
 
-This is as an example on how teams can structure their project repositories. Thanks to Lindsey Heagey and Joachim Meyer for the template, provided originally for [Geohackweek](https://github.com/geohackweek/sample_project_repository).
+Unsupervised surface classification on ICESat-2's ATL03. Preliminary goals include correctly downloading and processing ATL03 data, curating the data for training and performing clustering on it to determine different surface types. 
 
 ## Files
 
