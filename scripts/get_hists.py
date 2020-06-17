@@ -21,7 +21,7 @@ def run_help():
     print("Commandline options:")
     print("Type '--HELP' or '-H' flag for help.")
     print("Type '--DIR=' or '-D:' flag to specify data directory.")
-    print("Type '--EXTEND=' or '-E:' flag to specify data spatial extent.")
+    print("Type '--EXTENT=' or '-E:' flag to specify data spatial extent.")
     print("Type '--DATE=' or '-T:' to specify data date range.")
     print("Type '--USER=' or '-U:' flag to specify EarthData username.")
     print("Type '--EMAIL=' or '-E:' flag to specify EarthData email.")

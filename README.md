@@ -2,7 +2,9 @@
 
 Unsupervised surface classification on ICESat-2's ATL03. Preliminary goals include correctly downloading and processing ATL03 data, curating the data for training and performing clustering on it to determine different surface types. 
 
-Test
+# Team
+
+Brad Lipovsky, Yara Mohajerani, Kat Sejan, Susan Howard, Myung Sik Cho and Jordi Bolibar
 
 ## Files
 
