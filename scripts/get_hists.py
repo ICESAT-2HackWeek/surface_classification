@@ -25,17 +25,15 @@ def run_help():
     print("Type '--DATE=' or '-T:' to specify data date range.")
     print("Type '--USER=' or '-U:' flag to specify EarthData username.")
     print("Type '--EMAIL=' or '-E:' flag to specify EarthData email.")
-    print("Type '--FILENAME=' or '-F:' flag to specify file name to read.")
     print("Type '--noDownload' or '-N' flag to skip downloading data if it's already there.")
     
 #-- main function
 def main():
     #-- Read the system arguments listed after the program
-    long_options=['HELP','DIR=','EXTENT=','DATE=','USER=','EMAIL=','FILENAME=','noDownload']
-    optlist,arglist = getopt.getopt(sys.argv[1:],'HD:E:T:U:E:F:N',long_options)
+    long_options=['HELP','DIR=','EXTENT=','DATE=','USER=','EMAIL=','noDownload']
+    optlist,arglist = getopt.getopt(sys.argv[1:],'HD:E:T:U:E:N',long_options)
 
     #-- Set default settings
-    filename = 'processed_ATL06_20200330121520_00600712_003_01.h5'
     ddir = '/home/jovyan/data'
     short_name = 'ATL06'
     spatial_extent = [31.5, -70.56, 33.73, -69.29]
@@ -58,8 +56,6 @@ def main():
             user = arg
         elif opt in ("-E","--EMAIL"):
             email = arg
-        elif opt in ("-F","--FILENAME"):
-            filename = arg
         elif opt in ("N","--noDownload"):
             download = False
     
@@ -73,24 +69,30 @@ def main():
         #-- download data
         region_a.download_granules(ddir)
 
-    #-- read specified file
-    FILE_NAME = os.path.join(ddir,filename)
-    f = h5py.File(FILE_NAME, mode='r')
+    #-- Get list of files
+    file_list = os.listdir(ddir)
+    #-- Loop through files, read specified file, and save histogram as numpy array
+    for f in file_list:
+        #-- read specified file
+        FILE_NAME = os.path.join(ddir,f)
+        fid = h5py.File(FILE_NAME, mode='r')
 
-    #-- determine which beam is the strong beam (left or right)
-    if f['gt1l'].attrs['atlas_beam_type'] == 'strong':
-        strong_id = 'l'
-    else:
-        strong_id = 'r'
+        #-- determine which beam is the strong beam (left or right)
+        if fid['gt1l'].attrs['atlas_beam_type'] == 'strong':
+            strong_id = 'l'
+        else:
+            strong_id = 'r'
+            
+        #-- loop all three beam pairs and save all three
+        for i in range(1,4):
+            #-- read count
+            count = np.array(fid['gt%i%s/residual_histogram/count'%(i,strong_id)])
         
-    #-- loop all three beam pairs and save all three
-    for i in range(1,4):
-        #-- read count
-        count = np.array(f['gt%i%s/residual_histogram/count'%(i,strong_id)])
-    
-        #-- save numpy array
-        np.save(os.path.join(ddir,filename.replace('.h5','_hist_gt%i%s.npy'%(i,strong_id))),count)
+            #-- save numpy array
+            np.save(os.path.join(ddir,f.replace('.h5','_hist_gt%i%s.npy'%(i,strong_id))),count)
 
+        #-- close hdf5 file
+        fid.close()
 #-- run main program
 if __name__ == '__main__':
     main()
