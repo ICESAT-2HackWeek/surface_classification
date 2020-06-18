@@ -41,6 +41,7 @@ def main():
     user = ''
     email = ''
     download = True
+
     #-- read commandline inputs
     for opt, arg in optlist:
         if opt in ("-H","--HELP"):
@@ -49,9 +50,9 @@ def main():
         elif opt in ("-D","--DIR"):
             ddir = os.path.expanduser(arg)
         elif opt in ("-E","--EXTENT"):
-            spatial_extent = [float(i) for i in arg.split(',')]
+            spatial_extent = [float(i) for i in arg.replace('[','').replace(']','').split(',')]
         elif opt in ("-T","--DATE"):
-            date_range = arg.split(',')
+            date_range = arg.replace('[','').replace(']','').replace("'","").split(',')
         elif opt in ("-U","--USER"):
             user = arg
         elif opt in ("-E","--EMAIL"):
@@ -71,8 +72,11 @@ def main():
 
     #-- Get list of files
     file_list = os.listdir(ddir)
+    files = [f for f in file_list if f.endswith('.h5')]
+
     #-- Loop through files, read specified file, and save histogram as numpy array
-    for f in file_list:
+    for f in files:
+        print(f)
         #-- read specified file
         FILE_NAME = os.path.join(ddir,f)
         fid = h5py.File(FILE_NAME, mode='r')
@@ -86,13 +90,24 @@ def main():
         #-- loop all three beam pairs and save all three
         for i in range(1,4):
             #-- read count
-            count = np.array(fid['gt%i%s/residual_histogram/count'%(i,strong_id)])
-        
-            #-- save numpy array
+            count = fid['gt%i%s/residual_histogram/count'%(i,strong_id)][:]
+            lat_mean = fid['gt%i%s/residual_histogram/lat_mean'%(i,strong_id)][:]
+            lon_mean = fid['gt%i%s/residual_histogram/lon_mean'%(i,strong_id)][:]
+            h_li = fid['gt%i%s/land_ice_segments/h_li'%(i,strong_id)][:]
+            h_lat = fid['gt%i%s/land_ice_segments/latitude'%(i,strong_id)][:]
+            h_lon = fid['gt%i%s/land_ice_segments/longitude'%(i,strong_id)][:]
+
+            #-- save numpy arrays
             np.save(os.path.join(ddir,f.replace('.h5','_hist_gt%i%s.npy'%(i,strong_id))),count)
+            np.save(os.path.join(ddir,f.replace('.h5','_lat_mean_gt%i%s.npy'%(i,strong_id))),lat_mean)
+            np.save(os.path.join(ddir,f.replace('.h5','_lon_mean_gt%i%s.npy'%(i,strong_id))),lon_mean)
+            np.save(os.path.join(ddir,f.replace('.h5','_h_li_gt%i%s.npy'%(i,strong_id))),h_li)
+            np.save(os.path.join(ddir,f.replace('.h5','_h_lat_gt%i%s.npy'%(i,strong_id))),h_lat)
+            np.save(os.path.join(ddir,f.replace('.h5','_h_lon_gt%i%s.npy'%(i,strong_id))),h_lon)
 
         #-- close hdf5 file
         fid.close()
+
 #-- run main program
 if __name__ == '__main__':
     main()
