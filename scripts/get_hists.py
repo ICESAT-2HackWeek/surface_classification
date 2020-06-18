@@ -96,11 +96,23 @@ def main():
             h_li = fid['gt%i%s/land_ice_segments/h_li'%(i,strong_id)][:]
             h_lat = fid['gt%i%s/land_ice_segments/latitude'%(i,strong_id)][:]
             h_lon = fid['gt%i%s/land_ice_segments/longitude'%(i,strong_id)][:]
-
+            
+            path_hist = os.path.join(ddir,'hist')
+            if not os.path.exists(path_hist):
+                os.makedirs(path_hist)
+                
+            path_lon = os.path.join(ddir,'lon')
+            if not os.path.exists(path_lon):
+                os.makedirs(path_lon)
+                
+            path_lat = os.path.join(ddir,'lat')
+            if not os.path.exists(path_lat):
+                os.makedirs(path_lat)
+            
             #-- save numpy arrays
-            np.save(os.path.join(ddir,f.replace('.h5','_hist_gt%i%s.npy'%(i,strong_id))),count)
-            np.save(os.path.join(ddir,f.replace('.h5','_lat_mean_gt%i%s.npy'%(i,strong_id))),lat_mean)
-            np.save(os.path.join(ddir,f.replace('.h5','_lon_mean_gt%i%s.npy'%(i,strong_id))),lon_mean)
+            np.save(os.path.join(path_hist, f.replace('.h5','_hist_gt%i%s.npy'%(i,strong_id))),count)
+            np.save(os.path.join(path_lat,f.replace('.h5','_lat_mean_gt%i%s.npy'%(i,strong_id))),lat_mean)
+            np.save(os.path.join(path_lon,f.replace('.h5','_lon_mean_gt%i%s.npy'%(i,strong_id))),lon_mean)
             np.save(os.path.join(ddir,f.replace('.h5','_h_li_gt%i%s.npy'%(i,strong_id))),h_li)
             np.save(os.path.join(ddir,f.replace('.h5','_h_lat_gt%i%s.npy'%(i,strong_id))),h_lat)
             np.save(os.path.join(ddir,f.replace('.h5','_h_lon_gt%i%s.npy'%(i,strong_id))),h_lon)
