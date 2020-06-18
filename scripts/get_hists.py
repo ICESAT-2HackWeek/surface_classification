@@ -71,8 +71,11 @@ def main():
 
     #-- Get list of files
     file_list = os.listdir(ddir)
+    files = [f for f in file_list if f.endswith('.h5')]
+
     #-- Loop through files, read specified file, and save histogram as numpy array
-    for f in file_list:
+    for f in files:
+        print(f)
         #-- read specified file
         FILE_NAME = os.path.join(ddir,f)
         fid = h5py.File(FILE_NAME, mode='r')
@@ -93,6 +96,7 @@ def main():
 
         #-- close hdf5 file
         fid.close()
+
 #-- run main program
 if __name__ == '__main__':
     main()
